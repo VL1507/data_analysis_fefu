@@ -1,0 +1,102 @@
+x-redash-service: &redash-service
+  image: redash/redash:25.8.0
+  depends_on:
+    redash-postgres:
+      condition: service_healthy
+    redash-redis:
+      condition: service_healthy
+  environment:
+    REDASH_DATABASE_URL: ${REDASH_DATABASE_URL}
+    REDASH_COOKIE_SECRET: ${REDASH_COOKIE_SECRET}
+    REDASH_SECRET_KEY: ${REDASH_SECRET_KEY}
+    REDASH_REDIS_URL: ${REDASH_REDIS_URL}
+    PYTHONUNBUFFERED: ${PYTHONUNBUFFERED}
+    REDASH_LOG_LEVEL: ${REDASH_LOG_LEVEL}
+  restart: unless-stopped
+
+services:
+  #   generator:
+  #     build: .
+  #     depends_on:
+  #       - postgres
+  #     # environment:
+  #     #   DB_HOST: db
+  #     #   DB_NAME: weather_db
+  #     #   DB_USER: user
+  #     #   DB_PASSWORD: password
+  jupyter:
+    image: jupyter/datascience-notebook
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./notebooks:/home/jovyan/work
+  data-postgres:
+    image: postgres:15-alpine
+    container_name: data_postgres
+    environment:
+      POSTGRES_DB: ${DATA_POSTGRES_DB}
+      POSTGRES_USER: ${DATA_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${DATA_POSTGRES_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./init-db:/docker-entrypoint-initdb.d:ro
+      - data_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -h localhost -U ${DATA_POSTGRES_USER} -d ${DATA_POSTGRES_DB}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    restart: unless-stopped
+
+  redash-postgres:
+    image: postgres:15-alpine
+    container_name: redash_postgres
+    # env_file: 
+    #   - redash.env
+    environment:
+      POSTGRES_DB: ${REDASH_POSTGRES_DB}
+      POSTGRES_USER: ${REDASH_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${REDASH_POSTGRES_PASSWORD}
+    volumes:
+      - redash_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -h localhost -U ${REDASH_POSTGRES_USER} -d ${REDASH_POSTGRES_DB}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    restart: unless-stopped
+
+  redash-redis:
+    image: redis:7-alpine
+    volumes:
+      - redash_redis_data:/data
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli ping | grep PONG" ]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+      start_interval: 5s
+    restart: unless-stopped
+  redash-server:
+    <<: *redash-service
+    command: server
+    ports:
+      - "5000:5000"
+
+  redash-scheduler:
+    <<: *redash-service
+    command: scheduler
+
+  redash-workers:
+    <<: *redash-service
+    command: worker
+
+volumes:
+  data_postgres_data:
+  redash_postgres_data:
+  redash_redis_data:
+  jupyter:
