@@ -6,10 +6,10 @@ x-redash-service: &redash-service
     redash-redis:
       condition: service_healthy
   environment:
-    REDASH_DATABASE_URL: ${REDASH_DATABASE_URL}
+    REDASH_DATABASE_URL: postgresql://${REDASH_POSTGRES_USER}:${REDASH_POSTGRES_PASSWORD}@redash-postgres:5432/${REDASH_POSTGRES_DB}
     REDASH_COOKIE_SECRET: ${REDASH_COOKIE_SECRET}
     REDASH_SECRET_KEY: ${REDASH_SECRET_KEY}
-    REDASH_REDIS_URL: ${REDASH_REDIS_URL}
+    REDASH_REDIS_URL: redis://redash-redis:6379/0
     PYTHONUNBUFFERED: ${PYTHONUNBUFFERED}
     REDASH_LOG_LEVEL: ${REDASH_LOG_LEVEL}
   restart: unless-stopped
