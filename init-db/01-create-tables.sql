@@ -9,7 +9,7 @@ CREATE INDEX "activity_types_index_0"
 ON "activity_types" ("type_name");
 CREATE TABLE IF NOT EXISTS "fitness_data" (
 	"id" serial NOT NULL UNIQUE,
-	" recorded_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+	"recorded_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 	"activity_type_id" int NOT NULL,
 	"steps" int NOT NULL,
 	"distance_km" float NOT NULL,
