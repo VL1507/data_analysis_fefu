@@ -1,13 +1,25 @@
-CREATE TABLE IF NOT EXISTS fitness_data (
-    id BIGSERIAL PRIMARY KEY,
-    recorded_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    activity VARCHAR(20) NOT NULL,
-    steps INTEGER NOT NULL DEFAULT 0,
-    heart_rate INTEGER,
-    calories NUMERIC(6, 2) NOT NULL DEFAULT 0,
-    distance_m NUMERIC(8, 2),
-    speed_kmh NUMERIC(5, 2),
-    lat DOUBLE PRECISION,
-    lon DOUBLE PRECISION
+
+CREATE TABLE IF NOT EXISTS "activity_types" (
+	"id" serial NOT NULL UNIQUE,
+	"type_name" varchar(255) NOT NULL,
+	PRIMARY KEY("id")
 );
-CREATE INDEX IF NOT EXISTS idx_fitness_recorded_at ON fitness_data(recorded_at DESC);
+
+CREATE INDEX "activity_types_index_0"
+ON "activity_types" ("type_name");
+CREATE TABLE IF NOT EXISTS "fitness_data" (
+	"id" serial NOT NULL UNIQUE,
+	" recorded_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+	"activity_type_id" int NOT NULL,
+	"steps" int NOT NULL,
+	"distance_km" float NOT NULL,
+	"kilocalories" float NOT NULL,
+	"lat" float NOT NULL,
+	"lon" float NOT NULL,
+	PRIMARY KEY("id")
+);
+
+
+ALTER TABLE "fitness_data"
+ADD FOREIGN KEY("activity_type_id") REFERENCES "activity_types"("id")
+ON UPDATE NO ACTION ON DELETE NO ACTION;
