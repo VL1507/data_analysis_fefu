@@ -15,15 +15,11 @@ x-redash-service: &redash-service
   restart: unless-stopped
 
 services:
-  #   generator:
-  #     build: .
-  #     depends_on:
-  #       - postgres
-  #     # environment:
-  #     #   DB_HOST: db
-  #     #   DB_NAME: weather_db
-  #     #   DB_USER: user
-  #     #   DB_PASSWORD: password
+  data-generator:
+    build: .
+    depends_on:
+      data-postgres:
+        condition: service_healthy
   jupyter:
     image: quay.io/jupyter/datascience-notebook:notebook-7.5.1
     ports:
