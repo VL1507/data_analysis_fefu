@@ -8,7 +8,7 @@ RUN pip install --no-cache-dir uv
 
 WORKDIR /app
 COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen
+RUN uv sync --no-dev --frozen
 COPY . .
 
 CMD ["uv", "run", "data_generator"]
