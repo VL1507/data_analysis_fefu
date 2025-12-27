@@ -51,6 +51,12 @@ PostgreSQL
 
 ### Jupiter Notebook
 
+![Карта](./docs/jupiter_map.png)
+
+![км по дням и часам](./docs/jupiter_heatmap.png)
+
+![Кумулятивная сумма шагов по дням](./docs/jupiter_plot.png)
+
 ### Осмысленные коммиты
 
 При написании коммитов старался следовать правилам из этих статей:
