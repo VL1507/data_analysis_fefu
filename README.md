@@ -39,6 +39,10 @@ docker compose up
 
 ### База данных
 
+PostgreSQL
+
+![Схема БД](./docs/db_scheme.png)
+
 ### Redash
 
 ### Jupiter Notebook
