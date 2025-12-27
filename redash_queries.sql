@@ -1,12 +1,11 @@
 -- Пройдено км за все время
 select recorded_at,
-    SUM(kilocalories) OVER (
+    SUM(distance_km) OVER (
         ORDER BY recorded_at
-    ) AS total_kilocalories
+    ) AS total_distance_km
 from fitness_data
-ORDER BY recorded_at;
--- 
--- Трата килокалорий по часам
+ORDER BY recorded_at -- 
+    -- Трата килокалорий по часам
 SELECT date_trunc('hour', recorded_at) AS hour_start,
     SUM(kilocalories) AS total_kilocalorie
 FROM fitness_data
