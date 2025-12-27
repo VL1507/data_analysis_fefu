@@ -106,7 +106,40 @@ def get_new_activity(current_activity: Activity) -> Activity:
         return random.choice([Activity.WALKING, Activity.STANDING])
 
 
-state = State()
+def create_state() -> State:
+    with Session() as session:
+        fd = session.scalar(
+            select(FitnessData).order_by(FitnessData.recorded_at.desc()).limit(1)
+        )
+        if fd is None:
+            return State()
+
+        activity_type_name = session.scalar(
+            select(ActivityTypes.type_name).where(
+                ActivityTypes.id == fd.activity_type_id
+            )
+        )
+
+        if activity_type_name is None:
+            raise Exception("в бд странное activity_type_id")
+
+        if activity_type_name == Activity.RUNNING:
+            activity = Activity.RUNNING
+        elif activity_type_name == Activity.SLEEPING:
+            activity = Activity.SLEEPING
+        elif activity_type_name == Activity.STANDING:
+            activity = Activity.STANDING
+        elif activity_type_name == Activity.WALKING:
+            activity = Activity.WALKING
+        else:
+            raise Exception("неопознанное activity_type_name")
+
+        return State(dt=fd.recorded_at, activity=activity, lat=fd.lat, lon=fd.lon)
+
+    raise Exception("какая-то ошибка с бд")
+
+
+state = create_state()
 
 
 def generate():
