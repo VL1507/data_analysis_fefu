@@ -1,5 +1,11 @@
+from time import sleep
+from generator import generate
+
+
 def main() -> None:
-    print("\ntest" * 10)
+    while True:
+        generate()
+        sleep(1)
 
 
 if __name__ == "__main__":
