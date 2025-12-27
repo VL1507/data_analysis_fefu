@@ -45,6 +45,10 @@ PostgreSQL
 
 ### Redash
 
+[Запросы](./redash_queries.sql)
+
+![Дашборд](./docs/redash_dashboard.png)
+
 ### Jupiter Notebook
 
 ### Осмысленные коммиты
