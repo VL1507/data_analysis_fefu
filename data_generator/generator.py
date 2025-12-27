@@ -141,7 +141,7 @@ def generate():
     kilocalories = kilocalories_h / 60 * ACTIVITY_DURATION_IN_MINUTES
     distance_km = speed_km_h / 60 * ACTIVITY_DURATION_IN_MINUTES
 
-    rotation_angle = random.randint(-60, 60)
+    rotation_angle = random.randint(-45, 45)
     state.angle += rotation_angle
 
     new_lat, new_lon = calc_new_coordinates(
