@@ -14,18 +14,31 @@ x-redash-service: &redash-service
     REDASH_LOG_LEVEL: ${REDASH_LOG_LEVEL}
   restart: unless-stopped
 
+x-environment-for-pg: &environment-for-pg
+  DB_USER: ${DATA_POSTGRES_USER}
+  DB_PASSWORD: ${DATA_POSTGRES_PASSWORD}
+  DB_HOST: data_postgres
+  DB_PORT: 5432
+  DB_NAME: ${DATA_POSTGRES_DB}
+
 services:
   data-generator:
     build: .
+    environment:
+      <<: *environment-for-pg
     depends_on:
       data-postgres:
         condition: service_healthy
+
   jupyter:
     image: quay.io/jupyter/datascience-notebook:notebook-7.5.1
+    environment:
+      <<: *environment-for-pg
     ports:
       - "8888:8888"
     volumes:
       - ./notebooks:/home/jovyan/work
+
   data-postgres:
     image: postgres:15-alpine
     container_name: data_postgres
