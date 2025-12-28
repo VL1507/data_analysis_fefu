@@ -51,6 +51,8 @@ PostgreSQL
 
 ### Jupiter Notebook
 
+Хотел сделать в редаш, но как я понял там нельзя соединять точки линиями
+
 ![Карта](./docs/jupiter_map.png)
 
 ![км по дням и часам](./docs/jupiter_heatmap.png)
