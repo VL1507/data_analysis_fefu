@@ -19,7 +19,7 @@ git clone https://github.com/VL1507/data_analysis_fefu.git
 openssl rand -hex 32
 ```
 
-### При первым запусков
+### При первом запуске
 
 ```cmd
 docker compose run --rm redash-server create_db
@@ -51,7 +51,7 @@ PostgreSQL
 
 ### Jupiter Notebook
 
-Хотел сделать в редаш, но как я понял там нельзя соединять точки линиями
+Хотел сделать в redash, но, как я понял, там нельзя соединять точки линиями
 
 ![Карта](./docs/jupiter_map.png)
 
