@@ -31,7 +31,7 @@ services:
         condition: service_healthy
 
   jupyter:
-    image: quay.io/jupyter/datascience-notebook:notebook-7.5.1
+    image: quay.io/jupyter/minimal-notebook:notebook-7.5.1
     environment:
       <<: *environment-for-pg
     ports:
