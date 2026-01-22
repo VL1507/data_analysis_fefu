@@ -4,6 +4,7 @@ import random
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import StrEnum
+from typing import Final
 
 from constants import (
     ACTIVITY_DURATION_IN_MINUTES,
@@ -21,8 +22,8 @@ def calc_new_coordinates(
     """
     Формулы взяты с https://www.movable-type.co.uk/scripts/latlong.html#dest-point
     """
-    R_earth_km = 6371
-    delta = distance_km / R_earth_km
+    R_EARTH_KM: Final[float] = 6371
+    delta = distance_km / R_EARTH_KM
 
     lat_1_radians = math.radians(lat)
     lon_1_radians = math.radians(lon)
@@ -80,7 +81,6 @@ def insert_fitness_data(
 
 @dataclass
 class State:
-    # dt: datetime = datetime(year=2025, month=12, day=28, hour=12)
     dt: datetime = datetime.now()
     activity: Activity = Activity.STANDING
     lat: float = 43.034119
@@ -103,6 +103,7 @@ def get_new_activity(current_activity: Activity) -> Activity:
 
     if current_activity == Activity.RUNNING:
         return random.choice([Activity.WALKING, Activity.STANDING])
+    return None
 
 
 def create_state() -> State:
@@ -124,16 +125,7 @@ def create_state() -> State:
         if activity_type_name is None:
             raise Exception("в бд странное activity_type_id")
 
-        if activity_type_name == Activity.RUNNING:
-            activity = Activity.RUNNING
-        elif activity_type_name == Activity.SLEEPING:
-            activity = Activity.SLEEPING
-        elif activity_type_name == Activity.STANDING:
-            activity = Activity.STANDING
-        elif activity_type_name == Activity.WALKING:
-            activity = Activity.WALKING
-        else:
-            raise Exception("неопознанное activity_type_name")
+        activity = Activity(activity_type_name)
 
         return State(
             dt=fd.recorded_at, activity=activity, lat=fd.lat, lon=fd.lon
@@ -145,9 +137,7 @@ def create_state() -> State:
 state = create_state()
 
 
-def generate():
-    global state
-
+def generate() -> None:
     if 7 <= state.dt.hour <= 23:
         state.activity = get_new_activity(state.activity)
     else:
@@ -203,5 +193,3 @@ def generate():
         lat=state.lat,
         lon=state.lon,
     )
-
-    # print(state, kilocalories, steps)
