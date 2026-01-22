@@ -4,7 +4,6 @@ import random
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import StrEnum
-from time import sleep
 
 from constants import (
     ACTIVITY_DURATION_IN_MINUTES,
@@ -96,20 +95,22 @@ def get_new_activity(current_activity: Activity) -> Activity:
     if current_activity == Activity.SLEEPING:
         return Activity.STANDING
 
-    elif current_activity == Activity.STANDING:
+    if current_activity == Activity.STANDING:
         return random.choice([Activity.WALKING, Activity.RUNNING])
 
-    elif current_activity == Activity.WALKING:
+    if current_activity == Activity.WALKING:
         return random.choice([Activity.STANDING, Activity.RUNNING])
 
-    elif current_activity == Activity.RUNNING:
+    if current_activity == Activity.RUNNING:
         return random.choice([Activity.WALKING, Activity.STANDING])
 
 
 def create_state() -> State:
     with Session() as session:
         fd = session.scalar(
-            select(FitnessData).order_by(FitnessData.recorded_at.desc()).limit(1)
+            select(FitnessData)
+            .order_by(FitnessData.recorded_at.desc())
+            .limit(1)
         )
         if fd is None:
             return State()
@@ -134,7 +135,9 @@ def create_state() -> State:
         else:
             raise Exception("неопознанное activity_type_name")
 
-        return State(dt=fd.recorded_at, activity=activity, lat=fd.lat, lon=fd.lon)
+        return State(
+            dt=fd.recorded_at, activity=activity, lat=fd.lat, lon=fd.lon
+        )
 
     raise Exception("какая-то ошибка с бд")
 
