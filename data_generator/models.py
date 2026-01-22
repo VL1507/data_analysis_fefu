@@ -45,7 +45,7 @@ class FitnessData(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     recorded_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime(True), nullable=False, server_default=text("now()")
+        DateTime(timezone=True), nullable=False, server_default=text("now()")
     )
     activity_type_id: Mapped[int] = mapped_column(Integer, nullable=False)
     steps: Mapped[int] = mapped_column(Integer, nullable=False)
